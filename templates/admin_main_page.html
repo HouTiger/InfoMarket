@@ -1,0 +1,51 @@
+<!--文件名：admin_index.html-->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>管理员页面</title>
+    <script src="./static/jquery-3.3.1.min.js"></script>
+    <style>
+        .hid {
+            display: none
+        }
+
+        .button {
+            width: 70px;
+            height: 40px;
+            font-family: monospace;
+        }
+
+        .input_blank {
+            width: 200px;
+            height: 20px;
+        }
+    </style>
+</head>
+
+
+
+
+<body>
+    <div id="pwd" class='hid'>{{pwd}}</div>
+    <!--显示用户持仓情况-->
+    <table border=1>
+        <tr id='user_holding_head'>
+            <th>user</th>
+            <th>cash</th>
+            <th>5.22</th>
+            <th>5.29</th>
+            <th>6.05</th>
+            <th>6.12</th>
+            <th>6.19</th>
+        </tr>
+        <script>
+            $.ajaxSettings.async = false;
+            var pwd = $("#pwd").text();
+            $.post("request_all_user_holding", { password: pwd }, function (s) {
+                $("#user_holding_head").after(s);
+            })
+        </script>
+    </table>
+</body>

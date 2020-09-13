@@ -1,0 +1,66 @@
+<!--文件名：index.html-->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>查看交易历史</title>
+    <script src="./static/jquery-3.3.1.min.js"></script>
+    <style>
+        .hid {
+            display: none
+        }
+
+        .button {
+            width: 70px;
+            height: 40px;
+            font-family: monospace;
+        }
+
+        .input_blank {
+            width: 200px;
+            height: 20px;
+        }
+    </style>
+</head>
+
+
+<body>
+    <a href='/'> 返回登陆界面</a>
+    <br><br><br>
+    <table>
+        <tr>
+            <td>
+                <form id="login_form">
+                    <input type=text placeholder="用户名 / username" id="username" class="input_blank">
+                    <br><br>
+                    <input type="password" placeholder="密码 / password" id="password" class="input_blank">
+                    <input type=button value="提交" class="button" id="usersub">
+
+                </form>
+                
+                <code id="wrong_pwd"> </code>
+           
+                <br>
+            </td>
+            <script>
+                $.ajaxSettings.async = false;
+                $("#usersub").click(function() {
+                    var usr = $("#username").val();
+                    var pwd = $("#password").val();
+                    $.post("/user_trade_history_request", {_usr:usr, _pwd:pwd}, function(s) {
+                        if (s == '0') {
+                            $("#wrong_pwd").html("用户名或密码错误");
+                            
+                        }
+                        else {
+                            $("#wrong_pwd").html('<br>' + '交易记录如下:' + '<br>' + s);
+                            
+                        }
+                    })
+                })
+            </script>
+        </tr>
+
+    </table>
+</body>

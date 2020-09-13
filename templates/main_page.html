@@ -1,0 +1,225 @@
+<!--文件名：main_page.html-->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>信息市场</title>
+    <script src="/static/jquery-3.3.1.min.js"></script>
+    <style>
+        .hid {
+            display: none
+        }
+
+        option {
+            display: inline-block;
+            width: 100px;
+            position: relative;
+            vertical-align: middle;
+            padding: 0;
+            overflow: hidden;
+            background-color: #fff;
+            color: #555;
+            border: 1px solid #aaa;
+            text-shadow: none;
+            border-radius: 4px;
+            transition: box-shadow 0.25s ease;
+            z-index: 2;
+        }
+
+        .button {
+            width: 70px;
+            height: 40px;
+            font-family: monospace;
+        }
+
+        .input_blank {
+            width: 200px;
+            height: 20px;
+        }
+
+        #head {
+            font-size: large;
+            width: 200px;
+            height: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hid" id="username">{{username}}</div>
+    <div class="hid" id="pwd">{{pwd}}</div>
+    <a href="user_delete_order.html"> 删除订单</a>
+    <a href="user_trade_history.html"> 查看交易历史</a>
+    <a href="/"> 用户登陆</a>
+    <a href="user_change_pwd.html"> 更改密码</a>
+    <a href="explanation.html"> 信息市场游戏介绍</a>
+    <table>
+        <tr>
+            <!--提交订单表格-->
+            <td>
+                <form id="buy_sell_form">
+                    <input type="text" placeholder="数量（正整数）" id="quant" class="input_blank">
+                    <br><br>
+                    <input type="text" placeholder="单价（正整数）" id="price" class="input_blank">
+                    <br><br>
+                    <select name="day" id="day_sel">
+                        <option value="5.22">5.22
+                        <option value="5.29">5.29
+                        <option value="6.05">6.05
+                        <option value="6.12">6.12
+                        <option value="6.19">6.19
+                    </select>
+                    <select id="buy_sell_sel">
+                        <option value="buy"> buy</option>
+                        <option value="sell"> sell</option>
+                    </select>
+
+                    <input type="button" value="submit" class="button" id="order_submit">
+
+
+                </form>
+                <div id="wrong_order"></div>
+                <script>
+                    $.ajaxSettings.async = false;
+                    $("#order_submit").click(function () {
+                        var usr = $("#username").text();
+                        var pwd = $("#pwd").text();
+                        var share = $("#quant").val();
+                        var unit_price = $("#price").val();
+                        var shareID = $("#day_sel").val();
+                        var order_type = $("#buy_sell_sel").val();
+
+                        $.post("/handle_order_submit", { _usr: usr, _pwd: pwd, _share: share, _unit_price: unit_price, _shareID: shareID, _order_type: order_type }, function (s) {
+                            if (s == '1') {
+                                // 用户名或密码出错
+                                window.location.href = "./";
+                            }
+                            if (s == '2') {
+                                // 订单数据有问题，重新输入
+                                $("#wrong_order").html("订单数据出错或订单数量超出上限，请重新输入");
+                            }
+                            if (s == '3') {
+                                // 订单成功交易，刷新页面
+                                
+                                window.location.reload();
+                            }
+
+                        })
+                    })
+                </script>
+            </td>
+            <!--显示市场价格-->
+            <td>
+                <table border=1 align=right>
+                    <tr id='market_price_form_head'>
+                        <th>Day</th>
+                        <th>Market Price</th>
+                    </tr>
+                    <script>
+                        $.ajaxSettings.async = false;
+                        // 写入市场价格的表格
+                        $.post("/request_market_price_form", {}, function (s) {
+                            $("#market_price_form_head").after(s);
+                        })
+
+
+                    </script>
+
+
+                </table>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <!--显示用户持仓-->
+    <table border=1>
+        <tr id='user_holding_head'>
+            <th>user</th>
+            <th>cash</th>
+            <th>5.22</th>
+            <th>5.29</th>
+            <th>6.05</th>
+            <th>6.12</th>
+            <th>6.19</th>
+        </tr>
+        <script>
+            $.ajaxSettings.async = false;
+            var usr = $("#username").text();
+            var pwd = $("#pwd").text();
+            $.post("request_a_user_holding", { username: usr, password: pwd }, function (s) {
+                $("#user_holding_head").after(s);
+            })
+        </script>
+    </table>
+    <br>
+    <!--显示用户订单-->
+    <br>
+    用户现有订单
+    <table border=1>
+        <tr id="user_order_head">
+            <th>订单编号</th>
+            <th>订单类型（买/卖）</th>
+            <th>日期</th>
+            <th>股票数量</th>
+            <th>单价</th>
+            <th>总价</th>
+            <th>用户名</th>
+        </tr>
+        <script>
+            $.ajaxSettings.async = false;
+            var usr = $("#username").text();
+            var pwd = $("#pwd").text();
+            $.post("request_a_user_order", { _usr: usr, _pwd: pwd }, function (s) {
+                $("#user_order_head").after(s);
+            })
+        </script>
+    </table>
+    <br>
+    交易板
+    <!--显示所有订单-->
+    <table>
+        <tr>
+            <td>
+                <table border=1>
+                    <tr id="all_buy_order_head">
+                        <th> 订单编号</th>
+                        <th> 订单类型（买/卖）</th>
+                        <th> 日期</th>
+                        <th> 股票数量</th>
+                        <th> 单价</th>
+                        <th> 总价</th>
+
+                    </tr>
+                    <script>
+                        $.ajaxSettings.async = false;
+                        $.post("request_all_buy_order", function (s) {
+                            $("#all_buy_order_head").after(s);
+                        })
+                    </script>
+                </table>
+            </td>
+            <td>
+                <table border=1>
+                    <tr id='all_sell_order_head'>
+                        <th> 订单编号</th>
+                        <th> 订单类型（买/卖）</th>
+                        <th> 日期</th>
+                        <th> 股票数量</th>
+                        <th> 单价</th>
+                        <th> 总价</th>
+
+                    </tr>
+                    <script>
+                        $.ajaxSettings.async = false;
+                        $.post("request_all_sell_order", function (s) {
+                            $("#all_sell_order_head").after(s);
+                        })
+                    </script>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>删除订单</title>
+    <script src="/static/jquery-3.3.1.min.js"></script>
+    <style>
+        .hid {
+            display: none
+        }
+        .input_blank {
+            width: 200px;
+            height: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <a href='/'> 返回登陆界面</a>
+    <br><br><br>
+    <form action='' id="login_form">
+        <input type=text id="orderID" placeholder="Order ID" class="input_blank">
+        <br><br>
+        <input type=text id="username" placeholder="username" class="input_blank">
+        <br><br>
+        <input type=password id="password" placeholder="password" class="input_blank">
+        <br><br>
+        order type: 
+        <select id="ordertype">
+            <option value="buy"> buy </option>
+            <option value="sell">sell </option>
+        </select>
+        <input type="button" value="submit" id="ordersub">
+    </form>
+    <br>
+    <div id="wrong_input"></div>
+    <script>
+        $.ajaxSettings.async = false;
+        $("#ordersub").click(function() {
+            var usr = $("#username").val();
+            var pwd = $("#password").val();
+            var orderID = $("#orderID").val();
+            var order_type = $("#ordertype").val();
+            $.post("/handle_delete_order_request", {_usr:usr, _pwd:pwd, _orderID:orderID, _order_type:order_type}, function(s) {
+                if (s == '0') {
+                    $("#wrong_input").html("用户名、密码、订单类型或订单号错误");
+                }
+                if (s == '1') {  
+                    alert("成功删除订单"+orderID);
+                    window.location.reload();
+                     
+                }
+            })
+        })
+    </script>
+    <!--显示所有订单-->
+    <table>
+        <tr>
+            <td>
+                <table border=1>
+                    <tr id="all_buy_order_head">
+                        <th> 订单编号</th>
+                        <th> 订单类型（买/卖）</th>
+                        <th> 日期</th>
+                        <th> 股票数量</th>
+                        <th> 单价</th>
+                        <th> 总价</th>
+
+                    </tr>
+                    <script>
+                        $.ajaxSettings.async = false;
+                        $.post("request_all_buy_order", function (s) {
+                            $("#all_buy_order_head").after(s);
+                        })
+                    </script>
+                </table>
+            </td>
+            <td>
+                <table border=1>
+                    <tr id='all_sell_order_head'>
+                        <th> 订单编号</th>
+                        <th> 订单类型（买/卖）</th>
+                        <th> 日期</th>
+                        <th> 股票数量</th>
+                        <th> 单价</th>
+                        <th> 总价</th>
+
+                    </tr>
+                    <script>
+                        $.ajaxSettings.async = false;
+                        $.post("request_all_sell_order", function (s) {
+                            $("#all_sell_order_head").after(s);
+                        })
+                    </script>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+</body>

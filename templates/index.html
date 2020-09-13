@@ -1,0 +1,52 @@
+<!--文件名：index.html-->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>请登陆</title>
+    <script src="./static/jquery-3.3.1.min.js"></script>
+    <style>
+        .hid {
+            display: none
+        }
+
+        .button {
+            width: 70px;
+            height: 40px;
+            font-family: monospace;
+        }
+
+        .input_blank {
+            width: 200px;
+            height: 20px;
+        }
+    </style>
+</head>
+
+
+<body>
+    <a href="user_delete_order.html"> 删除订单</a>
+    <a href="user_trade_history.html"> 查看交易历史</a>
+    <a href="explanation.html"> 信息市场游戏介绍</a>
+    <a href="user_change_pwd.html"> 更改密码</a>
+    <a href="admin_index.html"> 管理员登录</a>
+    <br><br><br>
+    <table>
+        <tr>
+            <td>
+                <form action="/login" id="login_form" method="post">
+                    <input type=text placeholder="用户名 / username" name="username" class="input_blank"><br><br>
+                    <input type="password" placeholder="密码 / password" name="password" class="input_blank">
+                    <input type=submit value="登录" class="button" id="usersub">
+
+                </form>
+                
+                <small>{{MSG}}</small>
+                <br>
+            </td>
+
+        </tr>
+
+    </table>
+</body>

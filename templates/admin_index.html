@@ -1,0 +1,45 @@
+<!--文件名：admin_index.html-->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>管理员登陆</title>
+    <script src="./static/jquery-3.3.1.min.js"></script>
+    <style>
+        .hid {
+            display: none
+        }
+
+        .button {
+            width: 70px;
+            height: 40px;
+            font-family: monospace;
+        }
+
+        .input_blank {
+            width: 200px;
+            height: 20px;
+        }
+    </style>
+</head>
+
+
+<body>
+    <br><br><br>
+    <table>
+        <tr>
+            <td>
+                <form action="/admin_main_page.html" id="login_form" method="post">
+                    <input type="password" placeholder="密码 / password" name="password" class="input_blank">
+                    <input type=submit class="button" id="usersub">
+                    <div>{{MSG}}</div>
+                </form>
+                
+                <br>
+            </td>
+
+        </tr>
+
+    </table>
+</body>
